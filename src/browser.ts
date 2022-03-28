@@ -13,6 +13,7 @@ import { remoteLoader, RemotePlugin } from './plugins/remote-loader'
 import type { RoutingRule } from './plugins/routing-middleware'
 import { segmentio, SegmentioSettings } from './plugins/segmentio'
 import { validation } from './plugins/validation'
+import { inspectorHost } from './inspector'
 
 export interface LegacyIntegrationConfiguration {
   /* @deprecated - This does not indicate browser types anymore */
@@ -253,6 +254,7 @@ export class AnalyticsBrowser {
 
     const plugins = settings.plugins ?? []
     Context.initMetrics(legacySettings.metrics)
+    inspectorHost.setIntegrations(legacySettings.integrations)
 
     // needs to be flushed before plugins are registered
     flushPreBuffer(analytics)

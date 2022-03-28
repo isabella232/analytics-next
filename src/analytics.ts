@@ -28,6 +28,7 @@ import type {
   MiddlewareFunction,
 } from './plugins/middleware'
 import { version } from './generated/version'
+import { inspectorHost } from './inspector'
 
 const deprecationWarning =
   'This is being deprecated and will be not be available in future releases of Analytics JS'
@@ -65,6 +66,9 @@ export class Analytics extends Emitter {
   integrations: Integrations
   options: InitOptions
   queue: EventQueue
+
+  /** Interface for docking with inspector clients */
+  connectInspector = inspectorHost.connectInspector
 
   constructor(
     settings: AnalyticsSettings,
@@ -305,6 +309,8 @@ export class Analytics extends Emitter {
   ): Promise<DispatchedEvent> {
     const ctx = new Context(event)
 
+    inspectorHost.reportTriggered(ctx)
+
     if (isOffline() && !this.options.retryQueue) {
       return ctx
     }
@@ -326,6 +332,8 @@ export class Analytics extends Emitter {
     if (this._debug) {
       dispatched.flush()
     }
+
+    inspectorHost.reportDelivered(ctx)
 
     return dispatched
   }
