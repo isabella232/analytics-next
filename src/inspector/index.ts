@@ -63,7 +63,7 @@ export const inspectorHost = (() => {
       return
     }
 
-    inspector.trace(traceData)
+    inspector?.trace(traceData)
   }
 
   return {
